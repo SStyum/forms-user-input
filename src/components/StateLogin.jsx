@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Input from "./Input";
+import { hasMinLength, isEmail, isNotEmpty } from "../util/validation";
 
 export default function Login() {
 
@@ -12,8 +14,8 @@ export default function Login() {
     password: false,
   })
 
-  const emailIsInvalid = didEdit.email && !enteredValues.email.includes('@');
-  const passwordIsInvalid = didEdit.password && enteredValues.password !== "";
+  const emailIsInvalid = didEdit.email && !isEmail(values.email) && !isNotEmpty(values.email);
+  const passwordIsInvalid = didEdit.password && !hasMinLength(values.password, 6);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,30 +49,26 @@ export default function Login() {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            value={values.email}
-            onBlur={() => handleInputBlur('email')}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-          />
-          <div className="control-error">{emailIsInvalid && <p>Please enter a valid email!</p>}</div>
-        </div>
-
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            value={values.password}
-            onBlur={() => handleInputBlur('password')}
-            onChange={(e) => handleInputChange('password', e.target.value)}
-          />
-        </div>
+        <Input
+          label="Email"
+          id="email"
+          type="email"
+          name="email"
+          value={values.email}
+          onBlur={() => handleInputBlur('email')}
+          onChange={(e) => handleInputChange('email', e.target.value)}
+          error={emailIsInvalid && "Please enter a valid email!"}
+        />
+        <Input
+          label="Password"
+          id="password"
+          type="password"
+          name="password"
+          value={values.password}
+          onBlur={() => handleInputBlur('password')}
+          onChange={(e) => handleInputChange('password', e.target.value)}
+          error={passwordIsInvalid && "Please enter a valid password!"}
+        />
       </div>
 
       <p className="form-actions">
