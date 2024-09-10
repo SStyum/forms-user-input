@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 export default function Signup() {
+  const [passwordsNotEqual, setPasswordsNotEqual] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -7,9 +10,14 @@ export default function Signup() {
     const acquisitionChannel = fd.getAll('acquisition');
     const data = Object.fromEntries(fd.entries());
     data.acquisition = acquisitionChannel;
+
+    if (data.password !== data['confirm-password']) {
+      setPasswordsNotEqual(true);
+      return;
+    }
+
     console.log(data);
 
-    e.target.reset();
   };
 
   return (
@@ -35,9 +43,8 @@ export default function Signup() {
             type="password"
             name="confirm-password"
             required
-            minLength={6}
-            maxLength={16}
           />
+          <div className="control-error">{passwordsNotEqual && <p>Passwords must match!</p>}</div>
         </div>
       </div>
 
